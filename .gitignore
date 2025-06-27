@@ -1,0 +1,8 @@
+.env
+
+qnabot.ipynb
+
+__pycache__/
+*.pyc
+
+.vscode/
