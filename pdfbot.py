@@ -29,12 +29,14 @@ st.markdown(
 warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 
 # Your LLM API details here
-load_dotenv()
-API_KEY = os.getenv("API_KEY")
+# load_dotenv() USE THIS IF U ARE NOT ON STREAMLIT
+# API_KEY = os.getenv("API_KEY")
+
+API_KEY = st.secrets["API_KEY"]
 MODEL_NAME = "Llama-4-Maverick-17B-128E-Instruct"
 
 # App title
-st.title("🎴 PDF Question Answering Bot ")
+st.title("🎴 PDF QnA")
 
 # Upload PDF
 pdf_file = st.file_uploader("Upload your PDF", type=[".pdf"])

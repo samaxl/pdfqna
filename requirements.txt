@@ -8,3 +8,4 @@ rank_bm25
 jupyterlab
 ipywidgets
 pypdf
+dotenv
