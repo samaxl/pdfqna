@@ -10,3 +10,4 @@ ipywidgets
 pypdf
 dotenv
 beautifulsoup4
+pdfplumber
