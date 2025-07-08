@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 import os
 import tempfile
+from langchain_community.document_loaders import PDFPlumberLoader
 
 def load_html_as_document(file):
     content = file.read()
@@ -56,7 +57,7 @@ if file is not None:
             tmp_file.write(file.read())
             tmp_path = tmp_file.name
 
-        loader = PyPDFLoader(tmp_path)
+        loader = PDFPlumberLoader(tmp_path)
         pages = loader.load_and_split()
     
     elif file.name.endswith((".html", ".htm")):
