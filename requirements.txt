@@ -9,3 +9,4 @@ jupyterlab
 ipywidgets
 pypdf
 dotenv
+beautifulesoup4

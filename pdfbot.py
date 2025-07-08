@@ -7,8 +7,16 @@ from langchain_openai.chat_models import ChatOpenAI
 from langchain.schema.output_parser import StrOutputParser
 from operator import itemgetter
 from dotenv import load_dotenv
+from bs4 import BeautifulSoup
+from langchain_core.documents import Document
 import os
 import tempfile
+
+def load_html_as_document(file):
+    content = file.read()
+    soup = BeautifulSoup(content, "html.parser")
+    text = soup.get_text(separator="\n")
+    return [Document(page_content=text)]
 
 st.markdown(
     """
@@ -36,25 +44,33 @@ API_KEY = st.secrets["API_KEY"]
 MODEL_NAME = "Llama-4-Maverick-17B-128E-Instruct"
 
 # App title
-st.title("🎴 PDF QnA")
+st.title("🎴 PDF/HTML QnA")
 
 # Upload PDF
-pdf_file = st.file_uploader("Upload your PDF", type=[".pdf"])
+file = st.file_uploader("Upload your File", type=["pdf", "html", "htm"])
 
-if pdf_file is not None:
+if file is not None:
     # Load PDF pages
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        tmp_file.write(pdf_file.read())
-        tmp_path = tmp_file.name
+    if file.name.endswith(".pdf"):
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+            tmp_file.write(file.read())
+            tmp_path = tmp_file.name
 
-    loader = PyPDFLoader(tmp_path)
-    pages = loader.load_and_split()
+        loader = PyPDFLoader(tmp_path)
+        pages = loader.load_and_split()
+    
+    elif file.name.endswith((".html", ".htm")):
+        pages = load_html_as_document(file)
+
+    else:
+        st.error("Unsupported file type.")
+        st.stop()
 
     # Initialize retriever
     retriever = BM25Retriever.from_documents(pages)
 
     # Question input
-    question = st.text_input("Ask a question based on the PDF")
+    question = st.text_input("Ask a question based on the Document")
 
     if question:
         # Retrieve context
@@ -90,4 +106,5 @@ if pdf_file is not None:
 
         # Show the answer
         st.success(response)
+    
 
